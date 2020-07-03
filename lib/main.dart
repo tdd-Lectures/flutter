@@ -59,7 +59,9 @@ class _OurCoolAppState extends State<OurCoolApp> {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: widget.home(locator),
+        home: Scaffold(
+          body: widget.home(locator),
+        ),
       ),
     );
   }

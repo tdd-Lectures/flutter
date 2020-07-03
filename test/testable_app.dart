@@ -19,9 +19,7 @@ class TestableApp {
     IServiceModule module,
   }) {
     return OurCoolApp(
-      home: (factory) => Scaffold(
-        body: widget(factory),
-      ),
+      home: (factory) => widget(factory),
       testModules: [module],
     );
   }

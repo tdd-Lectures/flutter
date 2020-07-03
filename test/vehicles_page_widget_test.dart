@@ -35,6 +35,18 @@ void main() {
       expect(find.text('loading...'), findsOneWidget);
     });
 
+    testWidgets('on build show form to buy vehicle', (tester) async {
+      await buildApp(tester);
+
+      expect(find.byType(BuyVehicleFormWidget), findsOneWidget);
+    });
+
+    testWidgets('on build displays text: Your Vehicles', (tester) async {
+      await buildApp(tester);
+
+      expect(find.text('Your Vehicles'), findsOneWidget);
+    });
+
     testWidgets('display vehicle list after loading', (tester) async {
       await buildApp(tester, vehicles: [Vehicle()]);
       await tester.pumpAndSettle();

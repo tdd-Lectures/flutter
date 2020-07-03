@@ -39,7 +39,9 @@ class VehiclesModule implements IServiceModule {
 
 class VehiclesQueryGatewayFake implements VehiclesQueryGateway {
   @override
-  Future<List<Vehicle>> getVehicles() {
+  Future<List<Vehicle>> getVehicles() async {
+    await Future.delayed(Duration(seconds: 2));
+
     return Future.value([
       Vehicle(
         model: '116d Sport',

@@ -17,7 +17,7 @@ class VehicleListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      child: ListView(
+      child: Column(
         children: makeCards(),
       ),
     );
