@@ -1,28 +1,30 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:tdd_intro/gateways/gateways.dart';
 import 'package:tdd_intro/vehicles/vehicle.dart';
 import 'package:tdd_intro/vehicles/vehicle_list_widget.dart';
+import 'package:tdd_intro/vehicles/vehicles.dart';
 
 import 'testable_app.dart';
+import 'vehicle_list_widget_test.dart';
 
 class VehiclesQueryGatewayMock extends Mock implements VehiclesQueryGateway {}
 
 void main() {
-  group(VehiclePage, () {
-    Future buildApp(WidgetTester tester) async {
-      var query = VehiclesQueryGatewayMock();
-
-      when(query.getVehicles()).thenAnswer((_) {
-        return Future.value([
-          Vehicle(),
-        ]);
-      });
-
+  group(VehiclePageWidget, () {
+    Future buildApp(
+      WidgetTester tester, {
+      bool throwError = false,
+      List<Vehicle> vehicles,
+    }) async {
       await tester.pumpWidget(
         TestableApp.makeApp(
-          (locator) => VehiclePage(),
+          (locator) => VehiclePageWidget(
+            makeVehiclesQueryGateway(
+              throwError,
+              vehicles,
+            ),
+          ),
         ),
       );
     }
@@ -34,18 +36,51 @@ void main() {
     });
 
     testWidgets('display vehicle list after loading', (tester) async {
-      await buildApp(tester);
+      await buildApp(tester, vehicles: [Vehicle()]);
+      await tester.pumpAndSettle();
 
       expect(find.byType(VehicleListWidget), findsOneWidget);
+      assertContainsNVehicles(1);
+    });
+
+    testWidgets("when vehicles get loaded doesn't show loading",
+        (tester) async {
+      await buildApp(tester, vehicles: [Vehicle()]);
+      await tester.pumpAndSettle();
+
+      expect(find.text('loading...'), findsNothing);
+    });
+
+    testWidgets("failing to get vehicles doesn't show the vehicle list",
+        (tester) async {
+      await buildApp(tester, throwError: true);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(VehicleListWidget), findsNothing);
+    });
+
+    testWidgets('when query returns null vehicles list show loading',
+        (tester) async {
+      await buildApp(tester, vehicles: null);
+      await tester.pumpAndSettle();
+
+      expect(find.text('loading...'), findsOneWidget);
     });
   });
 }
 
-class VehiclePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Text('loading...'),
-    );
-  }
+VehiclesQueryGatewayMock makeVehiclesQueryGateway(
+  bool throwError,
+  List<Vehicle> vehicles,
+) {
+  var query = VehiclesQueryGatewayMock();
+
+  when(query.getVehicles()).thenAnswer((_) {
+    if (throwError) {
+      return Future.error(Error());
+    }
+
+    return Future.value(vehicles);
+  });
+  return query;
 }

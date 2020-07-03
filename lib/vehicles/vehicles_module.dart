@@ -13,6 +13,17 @@ class VehiclesModule implements IServiceModule {
       ),
     );
 
+    registry.factory<VehicleListWidget, List<Vehicle>>((locator) {
+      return Factory<VehicleListWidget, List<Vehicle>>(
+        (data) {
+          return VehicleListWidget(
+            data,
+            locator.resolve<Navigation>(),
+          );
+        },
+      );
+    });
+
     registry.singleton((_) => VehicleDetailWidget());
   }
 }

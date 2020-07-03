@@ -42,7 +42,7 @@ void main() {
 
       await buildApp(tester, vehicles);
 
-      assertDisplaysVehicle(
+      _assertDisplaysVehicle(
         model: 'this is my model',
         yearOfConstruction: 2019,
       );
@@ -89,11 +89,11 @@ void main() {
 
       await buildApp(tester, vehicles);
 
-      assertDisplaysVehicle(
+      _assertDisplaysVehicle(
         model: 'this is another model',
         yearOfConstruction: 2017,
       );
-      assertDisplaysVehicle(
+      _assertDisplaysVehicle(
         model: 'this is yet another model',
         yearOfConstruction: 2013,
       );
@@ -107,7 +107,7 @@ void main() {
 
       await buildApp(tester, vehicles);
 
-      expect(find.byType(VehicleCardWidget), findsNWidgets(2));
+      assertContainsNVehicles(2);
     });
 
     testWidgets('tapping a card displays the vehicle details', (tester) async {
@@ -123,6 +123,10 @@ void main() {
   });
 }
 
+void assertContainsNVehicles(int vehicleCount) {
+  expect(find.byType(VehicleCardWidget), findsNWidgets(vehicleCount));
+}
+
 Vehicle makeDummyVehicle() {
   return Vehicle(
     model: '',
@@ -130,7 +134,7 @@ Vehicle makeDummyVehicle() {
   );
 }
 
-void assertDisplaysVehicle({String model, int yearOfConstruction}) {
+void _assertDisplaysVehicle({String model, int yearOfConstruction}) {
   expect(find.text(model), findsOneWidget);
   expect(find.text(yearOfConstruction.toString()), findsOneWidget);
 }

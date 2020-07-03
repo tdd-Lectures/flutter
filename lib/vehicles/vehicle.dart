@@ -6,7 +6,7 @@ class Vehicle extends Equatable {
   final int yearOfConstruction;
   final VehicleType type;
 
-  Vehicle({
+  const Vehicle({
     this.model,
     this.vehicleId,
     this.yearOfConstruction,
