@@ -21,7 +21,7 @@ class OurCoolApp extends StatefulWidget {
   });
 
   static Widget _buildHome(ILocator locator) =>
-      locator.resolve<VehicleListWidget>();
+      locator.resolve<VehiclePageWidget>();
 
   @override
   _OurCoolAppState createState() => _OurCoolAppState();
