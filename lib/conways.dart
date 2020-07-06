@@ -50,4 +50,8 @@ class ConwaysGoL {
   void evolve() {
     _grid = makeGrid(algorithm);
   }
+
+  void toggle(int rowIndex, int cellIndex) {
+    _grid[rowIndex][cellIndex] = !_grid[rowIndex][cellIndex];
+  }
 }
