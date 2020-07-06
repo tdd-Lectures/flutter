@@ -46,6 +46,7 @@ class VehiclesModule implements IServiceModule {
 class BuyVehicleGatewayFake implements BuyVehicleGateway {
   @override
   Future buy(String vehicleId) {
+    if (vehicleId == 'error') throw Error();
     return Future.value(null);
   }
 }

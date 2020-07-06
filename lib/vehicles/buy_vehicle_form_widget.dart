@@ -5,7 +5,7 @@ import 'package:tdd_intro/text_label.dart';
 
 class BuyVehicleFormWidget extends StatelessWidget {
   final vehicleId = TextEditingController();
-  BuyVehicleGateway gateway;
+  final BuyVehicleGateway gateway;
   BuyVehicleFormWidget(this.gateway);
 
   @override
@@ -20,9 +20,34 @@ class BuyVehicleFormWidget extends StatelessWidget {
         ),
         RaisedButton(
           child: TextLabel('buy'),
-          onPressed: () => gateway.buy(vehicleId.text),
+          onPressed: () async {
+            try {
+              await _getGateway().buy(vehicleId.text);
+            } catch (_) {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text('Failed to Buy'),
+                    content: TextLabel(
+                        'At this time its not possible to buy this vehicle.'),
+                  );
+                },
+              );
+            }
+          },
         )
       ],
     );
   }
+
+  BuyVehicleGateway _getGateway() {
+    if (vehicleId.text != '') return gateway;
+    return _StubGateway();
+  }
+}
+
+class _StubGateway implements BuyVehicleGateway {
+  @override
+  Future buy(String vehicleId) => null;
 }

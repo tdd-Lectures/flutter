@@ -11,18 +11,37 @@ class BuyVehicleGatewayMock extends Mock implements BuyVehicleGateway {}
 
 void main() {
   group(BuyVehicleFormWidget, () {
-    BuyVehicleGateway gateway;
+    String vehicleBought;
+
+    BuyVehicleGatewayMock makeBuyVehicleGateway(
+      bool throwError,
+    ) {
+      var gateway = BuyVehicleGatewayMock();
+
+      when(gateway.buy(any)).thenAnswer((_) {
+        if (throwError) {
+          return Future.error(Error());
+        }
+        vehicleBought = _.positionalArguments[0];
+        return Future.value(null);
+      });
+
+      return gateway;
+    }
 
     void ensureVehicleWasBought(String vehicleId) {
-      verify(gateway.buy(vehicleId));
+      expect(vehicleBought, equals(vehicleId));
+    }
+
+    void ensureVehicleWasNotBought() {
+      expect(vehicleBought, isNull);
     }
 
     Future buildApp(
       WidgetTester tester, {
       bool throwError = false,
-      List<Vehicle> vehicles,
     }) async {
-      gateway = BuyVehicleGatewayMock();
+      var gateway = makeBuyVehicleGateway(throwError);
 
       await tester.pumpWidget(
         TestableApp.makeApp(
@@ -47,12 +66,13 @@ void main() {
       expect((button.child as TextLabel).text, 'buy');
     });
 
-    testWidgets('on tapping buy button call buy gateway', (tester) async {
+    testWidgets("on tapping buy button without input doesn't call buy gateway",
+        (tester) async {
       await buildApp(tester);
 
       await tester.tap(find.byType(RaisedButton));
 
-      ensureVehicleWasBought('');
+      ensureVehicleWasNotBought();
     });
 
     testWidgets(
@@ -65,5 +85,29 @@ void main() {
 
       ensureVehicleWasBought('Vehicle1');
     });
+
+    testWidgets('when buy fails popup dialog with error message',
+        (tester) async {
+      await buildApp(tester, throwError: true);
+
+      await tester.enterText(find.byType(TextField), 'Vehicle1');
+      await tester.tap(find.byType(RaisedButton));
+      await tester.pumpAndSettle();
+
+      assertAlertDialog(tester);
+    });
   });
+}
+
+void assertAlertDialog(WidgetTester tester) {
+  var dialog = tester.widgetByType<AlertDialog>();
+  multipleExpects([
+    () => expect(dialog, isNotNull),
+    () => expect((dialog.title as Text), isNotNull, reason: 'title is not set'),
+    () => expect((dialog.title as Text).data, 'Failed to Buy'),
+    () => expect((dialog.content as TextLabel), isNotNull,
+        reason: 'content is not set'),
+    () => expect((dialog.content as TextLabel).text,
+        'At this time its not possible to buy this vehicle.'),
+  ]);
 }
