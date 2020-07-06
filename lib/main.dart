@@ -75,17 +75,22 @@ class _MyHomePageState extends State<MyHomePage> {
   Iterable<Widget> makeGrid(List<List<bool>> grid) sync* {
     for (var rowIndex = 0; rowIndex < grid.length; ++rowIndex) {
       yield Row(
-        children: makeCell(grid[rowIndex]).toList(),
+        children: makeCell(grid[rowIndex], rowIndex).toList(),
       );
     }
   }
 
-  Iterable<Widget> makeCell(List<bool> grid) sync* {
+  Iterable<Widget> makeCell(List<bool> grid, int rowIndex) sync* {
     for (var cellIndex = 0; cellIndex < grid.length; ++cellIndex) {
-      yield Container(
-        height: 10,
-        width: 10,
-        color: grid[cellIndex] ? Colors.green : Colors.transparent,
+      yield GestureDetector(
+        onTap: () => {
+          widget.conways.toggle(rowIndex, cellIndex),
+        },
+        child: Container(
+          height: 10,
+          width: 10,
+          color: grid[cellIndex] ? Colors.green : Colors.transparent,
+        ),
       );
     }
   }
