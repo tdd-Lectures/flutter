@@ -24,7 +24,8 @@ class VehiclePageWidget extends StatelessWidget {
               future: query.getVehicles(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return WidgetResolver<VehicleListWidget, List<Vehicle>>(
+                  return WidgetResolverWithArgs<VehicleListWidget,
+                      List<Vehicle>>(
                     snapshot.data,
                   );
                 }
@@ -37,7 +38,7 @@ class VehiclePageWidget extends StatelessWidget {
                 );
               },
             ),
-            BuyVehicleFormWidget(),
+            WidgetResolver<BuyVehicleFormWidget>(),
           ],
         ),
       ),

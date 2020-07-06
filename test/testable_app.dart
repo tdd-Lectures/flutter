@@ -7,7 +7,9 @@ import 'package:tdd_intro/main.dart';
 
 extension Tests on WidgetTester {
   List<T> widgetsByType<T extends Widget>() =>
-      this.widgetList(find.byType(T)).cast<T>().toList();
+      this.widgetList<T>(find.byType(T)).toList();
+
+  T widgetByType<T extends Widget>() => this.widget<T>(find.byType(T));
 }
 
 Type typeOf<T>() => T;

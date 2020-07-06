@@ -26,6 +26,11 @@ class VehiclesModule implements IServiceModule {
     });
 
     registry.singleton((_) => VehicleDetailWidget());
+    registry.singleton(
+      (locator) => BuyVehicleFormWidget(
+        locator.resolve<BuyVehicleGateway>(),
+      ),
+    );
 
     registry.singleton(
       (locator) => VehiclePageWidget(
@@ -34,6 +39,14 @@ class VehiclesModule implements IServiceModule {
     );
 
     registry.singleton<VehiclesQueryGateway>((_) => VehiclesQueryGatewayFake());
+    registry.singleton<BuyVehicleGateway>((_) => BuyVehicleGatewayFake());
+  }
+}
+
+class BuyVehicleGatewayFake implements BuyVehicleGateway {
+  @override
+  Future buy(String vehicleId) {
+    return Future.value(null);
   }
 }
 
