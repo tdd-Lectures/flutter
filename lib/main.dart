@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
           title: Text('Conways - game of life'),
-        ),//test
+        ),//test2
         body: Builder(
           builder: (context) {
             return MyHomePage(
